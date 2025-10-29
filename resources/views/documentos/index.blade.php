@@ -13,6 +13,7 @@
             <th class="px-4 py-2">Versión</th>
             <th class="px-4 py-2">Subido por</th>
             <th class="px-4 py-2">Fecha</th>
+            <th class="px-4 py-2">Predicción IA</th>
             <th class="px-4 py-2">Acciones</th>
         </tr>
     </thead>
@@ -24,6 +25,9 @@
             <td class="border px-4 py-2">{{ $documento->version }}</td>
             <td class="border px-4 py-2">{{ $documento->uploader->name ?? '-' }}</td>
             <td class="border px-4 py-2">{{ $documento->uploaded_at->format('d/m/Y') }}</td>
+            <td class="border px-4 py-2">
+                <span data-ia-documento="{{ $documento->id }}" class="block"></span>
+            </td>
             <td class="border px-4 py-2 flex gap-2">
                 <a href="{{ route('documentos.edit', $documento) }}" class="text-gray-700 font-semibold hover:text-yellow-600 hover:underline">Editar</a>
                 <form action="{{ route('documentos.destroy', $documento) }}" method="POST" onsubmit="return confirm('¿Eliminar documento?');">

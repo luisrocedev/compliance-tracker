@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('tipo');
-            $table->enum('area', ['laboral', 'ambiental', 'seguridad', 'datos']);
+            $table->string('area', 50);
             $table->string('numero_documento');
             $table->date('fecha_emision');
             $table->date('fecha_vencimiento');

@@ -19,7 +19,18 @@ class DocumentoController extends Controller
     public function index()
     {
         $documentos = Documento::with(['normativa', 'uploader'])->orderByDesc('uploaded_at')->get();
-        return view('documentos.index', compact('documentos'));
+        // Predicciones IA para cada documento en la tabla
+        $predicciones = [];
+        foreach ($documentos as $d) {
+            try {
+                $prompt = "Dado el siguiente documento, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$d->nombre_archivo}, Versión: {$d->version}, Fecha de emisión: {$d->fecha_emision}, Fecha de vencimiento: {$d->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
+                $pred = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
+            } catch (\Exception $e) {
+                $pred = null;
+            }
+            $predicciones[$d->id] = $pred;
+        }
+        return view('documentos.index', compact('documentos', 'predicciones'));
     }
 
     /**
@@ -75,7 +86,14 @@ class DocumentoController extends Controller
     {
         $documento->load(['normativa', 'uploader', 'versiones.uploader']);
         $versiones = $documento->versiones()->orderByDesc('uploaded_at')->get();
-        return view('documentos.show', compact('documento', 'versiones'));
+        $prediction = null;
+        try {
+            $prompt = "Dado el siguiente documento, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$documento->nombre}, Tipo: {$documento->tipo}, Estado: {$documento->estado}, Fecha de emisión: {$documento->fecha_emision}, Fecha de vencimiento: {$documento->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
+            $prediction = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
+        } catch (\Exception $e) {
+            $prediction = null;
+        }
+        return view('documentos.show', compact('documento', 'versiones', 'prediction'));
     }
 
     /**

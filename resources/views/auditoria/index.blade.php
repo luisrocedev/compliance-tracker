@@ -57,7 +57,7 @@
         </thead>
         <tbody>
             @forelse($auditorias as $auditoria)
-        <tr class="hover:bg-gray-50 transition">
+            <tr class="hover:bg-gray-50 transition">
                 <td class="border px-2 py-1">{{ $auditoria->user->name ?? '-' }}</td>
                 <td class="border px-2 py-1">{{ $auditoria->accion }}</td>
                 <td class="border px-2 py-1">{{ $auditoria->tabla_afectada }}</td>

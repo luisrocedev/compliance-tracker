@@ -12,29 +12,35 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::create([
-            'name' => 'Admin Principal',
-            'email' => 'admin@demo.com',
-            'password' => bcrypt('password'),
-            'role' => 'admin',
-        ]);
+        \App\Models\User::firstOrCreate(
+            ['email' => 'admin@demo.com'],
+            [
+                'name' => 'Admin Principal',
+                'password' => bcrypt('password'),
+                'role' => 'admin',
+            ]
+        );
 
         foreach ([1, 2, 3] as $i) {
-            \App\Models\User::create([
-                'name' => 'Manager ' . $i,
-                'email' => "manager{$i}@demo.com",
-                'password' => bcrypt('password'),
-                'role' => 'manager',
-            ]);
+            \App\Models\User::firstOrCreate(
+                ['email' => "manager{$i}@demo.com"],
+                [
+                    'name' => 'Manager ' . $i,
+                    'password' => bcrypt('password'),
+                    'role' => 'manager',
+                ]
+            );
         }
 
         foreach ([1, 2] as $i) {
-            \App\Models\User::create([
-                'name' => 'Viewer ' . $i,
-                'email' => "viewer{$i}@demo.com",
-                'password' => bcrypt('password'),
-                'role' => 'viewer',
-            ]);
+            \App\Models\User::firstOrCreate(
+                ['email' => "viewer{$i}@demo.com"],
+                [
+                    'name' => 'Viewer ' . $i,
+                    'password' => bcrypt('password'),
+                    'role' => 'viewer',
+                ]
+            );
         }
     }
 }

@@ -25,7 +25,19 @@ class NormativaController extends Controller
             });
         }
         $normativas = $query->orderByDesc('created_at')->paginate(10)->appends($request->all());
-        return view('normativas.index', compact('normativas'));
+
+        // Predicciones IA para cada normativa en la tabla (solo página actual)
+        $predicciones = [];
+        foreach ($normativas as $n) {
+            try {
+                $prompt = "Dada la siguiente normativa, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$n->nombre}, Tipo: {$n->tipo}, Estado: {$n->estado}, Fecha de emisión: {$n->fecha_emision}, Fecha de vencimiento: {$n->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
+                $pred = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
+            } catch (\Exception $e) {
+                $pred = null;
+            }
+            $predicciones[$n->id] = $pred;
+        }
+        return view('normativas.index', compact('normativas', 'predicciones'));
     }
 
     /**
@@ -63,7 +75,15 @@ class NormativaController extends Controller
      */
     public function show(Normativa $normativa)
     {
-        //
+        // Lógica para predicción IA
+        $prediction = null;
+        try {
+            $prompt = "Dada la siguiente normativa, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$normativa->nombre}, Tipo: {$normativa->tipo}, Estado: {$normativa->estado}, Fecha de emisión: {$normativa->fecha_emision}, Fecha de vencimiento: {$normativa->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
+            $prediction = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
+        } catch (\Exception $e) {
+            $prediction = null;
+        }
+        return view('normativas.show', compact('normativa', 'prediction'));
     }
 
     /**
