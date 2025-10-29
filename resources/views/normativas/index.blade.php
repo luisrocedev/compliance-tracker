@@ -20,7 +20,6 @@
                 <th class="px-4 py-2">Nº Documento</th>
                 <th class="px-4 py-2">Vencimiento</th>
                 <th class="px-4 py-2">Estado</th>
-                {{-- <th class="px-4 py-2">Predicción IA</th> --}} {{-- TODO: Reactivar cuando IA esté disponible --}}
                 <th class="px-4 py-2">Acciones</th>
             </tr>
         </thead>
@@ -33,19 +32,6 @@
                 <td class="border px-4 py-2">{{ $normativa->numero_documento }}</td>
                 <td class="border px-4 py-2">{{ $normativa->fecha_vencimiento->format('d/m/Y') }}</td>
                 <td class="border px-4 py-2">{{ $normativa->estado }}</td>
-                {{--
-                <td class="border px-4 py-2">
-                    @php $pred = $predicciones[$normativa->id] ?? null; @endphp
-                    @if($pred === 'Procesando...')
-                    <span class="animate-spin inline-block w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full align-middle"></span>
-                    <span class="text-xs text-gray-500">Procesando...</span>
-                    @elseif($pred)
-                    <span class='inline-block px-3 py-1 rounded-full text-xs font-bold'>{{ $pred }}</span>
-                @else
-                <span class="text-xs text-gray-500">Sin datos</span>
-                @endif
-                </td>
-                --}} {{-- TODO: Reactivar cuando IA esté disponible --}}
                 <td class="border px-4 py-2 flex gap-2">
                     <a href="{{ route('normativas.show', $normativa) }}" class="text-red-600 font-semibold hover:underline">Ver</a>
                     <a href="{{ route('normativas.edit', $normativa) }}" class="text-gray-700 font-semibold hover:text-yellow-600 hover:underline">Editar</a>
@@ -61,6 +47,11 @@
                 <td colspan="7" class="text-center text-gray-500 py-4">No se encontraron normativas.</td>
             </tr>
             @endforelse
+            <tr>
+                <td colspan="6">
+                    {{ $normativas->links() }}
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

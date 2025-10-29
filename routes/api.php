@@ -14,6 +14,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+use App\Http\Controllers\Api\NormativaApiController;
+use App\Http\Controllers\Api\DocumentoApiController;
+use App\Http\Controllers\Api\AlertaApiController;
+use App\Http\Controllers\Api\UserApiController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('normativas', NormativaApiController::class);
+    Route::apiResource('documentos', DocumentoApiController::class);
+    Route::apiResource('alertas', AlertaApiController::class);
+    Route::apiResource('usuarios', UserApiController::class);
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });

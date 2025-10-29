@@ -35,15 +35,8 @@ class NormativaController extends Controller
                 ;
             });
         }
-        $normativas = $query->orderByDesc('created_at')->limit(10)->get();
-
-        // Predicciones IA para cada normativa en la tabla (solo página actual)
-        $predicciones = [];
-        foreach ($normativas as $n) {
-            $cacheKey = 'prediction:normativa:' . $n->id;
-            $predicciones[$n->id] = Cache::get($cacheKey);
-        }
-        return view('normativas.index', compact('normativas', 'predicciones'));
+        $normativas = $query->orderByDesc('created_at')->paginate(10)->appends($request->all());
+        return view('normativas.index', compact('normativas'));
     }
 
     /**

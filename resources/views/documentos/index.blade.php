@@ -13,7 +13,6 @@
             <th class="px-4 py-2">Versión</th>
             <th class="px-4 py-2">Subido por</th>
             <th class="px-4 py-2">Fecha</th>
-            <th class="px-4 py-2">Predicción IA</th>
             <th class="px-4 py-2">Acciones</th>
         </tr>
     </thead>
@@ -25,17 +24,6 @@
             <td class="border px-4 py-2">{{ $documento->version }}</td>
             <td class="border px-4 py-2">{{ $documento->uploader->name ?? '-' }}</td>
             <td class="border px-4 py-2">{{ $documento->uploaded_at->format('d/m/Y') }}</td>
-            <td class="border px-4 py-2">
-                @php $pred = $predicciones[$documento->id] ?? null; @endphp
-                @if($pred === 'Procesando...')
-                <span class="animate-spin inline-block w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full align-middle"></span>
-                <span class="text-xs text-gray-500">Procesando...</span>
-                @elseif($pred)
-                <span class='inline-block px-3 py-1 rounded-full text-xs font-bold'>{{ $pred }}</span>
-                @else
-                <span class="text-xs text-gray-500">Sin datos</span>
-                @endif
-            </td>
             <td class="border px-4 py-2 flex gap-2">
                 <a href="{{ route('documentos.edit', $documento) }}" class="text-gray-700 font-semibold hover:text-yellow-600 hover:underline">Editar</a>
                 <form action="{{ route('documentos.destroy', $documento) }}" method="POST" onsubmit="return confirm('¿Eliminar documento?');">
@@ -46,6 +34,11 @@
             </td>
         </tr>
         @endforeach
+        <tr>
+            <td colspan="6">
+                {{ $documentos->links() }}
+            </td>
+        </tr>
     </tbody>
 </table>
 @endsection

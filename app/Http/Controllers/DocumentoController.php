@@ -19,14 +19,8 @@ class DocumentoController extends Controller
      */
     public function index()
     {
-        $documentos = Documento::with(['normativa', 'uploader'])->orderByDesc('uploaded_at')->limit(10)->get();
-        // Predicciones IA para cada documento en la tabla
-        $predicciones = [];
-        foreach ($documentos as $d) {
-            $cacheKey = 'prediction:documento:' . $d->id;
-            $predicciones[$d->id] = Cache::get($cacheKey);
-        }
-        return view('documentos.index', compact('documentos', 'predicciones'));
+        $documentos = Documento::with(['normativa', 'uploader'])->orderByDesc('uploaded_at')->paginate(10);
+        return view('documentos.index', compact('documentos'));
     }
 
     /**
@@ -82,14 +76,7 @@ class DocumentoController extends Controller
     {
         $documento->load(['normativa', 'uploader', 'versiones.uploader']);
         $versiones = $documento->versiones()->orderByDesc('uploaded_at')->get();
-        $cacheKey = 'prediction:documento:' . $documento->id;
-        $prediction = Cache::get($cacheKey);
-        if ($prediction === null) {
-            $prompt = "Dado el siguiente documento, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$documento->nombre}, Tipo: {$documento->tipo}, Estado: {$documento->estado}, Fecha de emisión: {$documento->fecha_emision}, Fecha de vencimiento: {$documento->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
-            \App\Jobs\ProcessDocumentoPredictionJob::dispatch($documento->id, $prompt);
-            $prediction = 'Procesando...';
-        }
-        return view('documentos.show', compact('documento', 'versiones', 'prediction'));
+        return view('documentos.show', compact('documento', 'versiones'));
     }
 
     /**
