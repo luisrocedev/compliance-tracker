@@ -1,3 +1,14 @@
+use App\Http\Controllers\ReporteController;
+// Rutas de reportes avanzados
+Route::prefix('reportes')->group(function () {
+Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
+Route::get('/filtros', [ReporteController::class, 'filtros'])->name('reportes.filtros');
+Route::get('/exportar/pdf', [ReporteController::class, 'exportarPdf'])->name('reportes.exportar.pdf');
+Route::get('/exportar/excel', [ReporteController::class, 'exportarExcel'])->name('reportes.exportar.excel');
+});
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NormativaController;
+Route::post('/normativas/{normativa}/prediccion', [NormativaController::class, 'generarPrediccion'])->name('normativas.prediccion');
 <?php
 
 use Illuminate\Support\Facades\Route;

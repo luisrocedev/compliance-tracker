@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\DocumentoVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentoController extends Controller
@@ -18,17 +19,12 @@ class DocumentoController extends Controller
      */
     public function index()
     {
-        $documentos = Documento::with(['normativa', 'uploader'])->orderByDesc('uploaded_at')->get();
+        $documentos = Documento::with(['normativa', 'uploader'])->orderByDesc('uploaded_at')->limit(10)->get();
         // Predicciones IA para cada documento en la tabla
         $predicciones = [];
         foreach ($documentos as $d) {
-            try {
-                $prompt = "Dado el siguiente documento, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$d->nombre_archivo}, Versión: {$d->version}, Fecha de emisión: {$d->fecha_emision}, Fecha de vencimiento: {$d->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
-                $pred = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
-            } catch (\Exception $e) {
-                $pred = null;
-            }
-            $predicciones[$d->id] = $pred;
+            $cacheKey = 'prediction:documento:' . $d->id;
+            $predicciones[$d->id] = Cache::get($cacheKey);
         }
         return view('documentos.index', compact('documentos', 'predicciones'));
     }
@@ -86,12 +82,12 @@ class DocumentoController extends Controller
     {
         $documento->load(['normativa', 'uploader', 'versiones.uploader']);
         $versiones = $documento->versiones()->orderByDesc('uploaded_at')->get();
-        $prediction = null;
-        try {
+        $cacheKey = 'prediction:documento:' . $documento->id;
+        $prediction = Cache::get($cacheKey);
+        if ($prediction === null) {
             $prompt = "Dado el siguiente documento, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$documento->nombre}, Tipo: {$documento->tipo}, Estado: {$documento->estado}, Fecha de emisión: {$documento->fecha_emision}, Fecha de vencimiento: {$documento->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
-            $prediction = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
-        } catch (\Exception $e) {
-            $prediction = null;
+            \App\Jobs\ProcessDocumentoPredictionJob::dispatch($documento->id, $prompt);
+            $prediction = 'Procesando...';
         }
         return view('documentos.show', compact('documento', 'versiones', 'prediction'));
     }

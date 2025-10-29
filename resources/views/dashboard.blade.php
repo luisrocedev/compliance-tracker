@@ -22,47 +22,13 @@
         </a>
     </div>
 </div>
-@if(isset($prediccionesNormativas) && count($prediccionesNormativas))
-<div class="max-w-4xl mx-auto mt-10">
-    <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
-        </svg>
-        Próximas renovaciones (Normativas)
-    </h2>
-    <ul class="bg-white border rounded divide-y">
-        @foreach($prediccionesNormativas as $p)
-        <li class="flex items-center justify-between px-4 py-3">
-            <div>
-                <span class="font-semibold">{{ $p['nombre'] }}</span>
-                <span class="ml-2 text-gray-500 text-sm">(Vence: {{ \Carbon\Carbon::parse($p['fecha_vencimiento'])->format('d/m/Y') }})</span>
-            </div>
-            <span data-ia-normativa="{{ $p['id'] }}" class="block"></span>
-        </li>
-        @endforeach
-    </ul>
-</div>
-@endif
-
-@if(isset($prediccionesDocumentos) && count($prediccionesDocumentos))
-<div class="max-w-4xl mx-auto mt-8">
-    <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center gap-2">
-        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
-        </svg>
-        Próximas renovaciones (Documentos)
-    </h2>
-    <ul class="bg-white border rounded divide-y">
-        @foreach($prediccionesDocumentos as $p)
-        <li class="flex items-center justify-between px-4 py-3">
-            <div>
-                <span class="font-semibold">{{ $p['nombre'] }}</span>
-                <span class="ml-2 text-gray-500 text-sm">(Vence: {{ \Carbon\Carbon::parse($p['fecha_vencimiento'])->format('d/m/Y') }})</span>
-            </div>
-            <span data-ia-documento="{{ $p['id'] }}" class="block"></span>
-        </li>
-        @endforeach
-    </ul>
-</div>
-@endif
+{{--
+    TODO: Reactivar sección de predicciones IA cuando se habilite la funcionalidad IA
+    @if(isset($prediccionesNormativas) && count($prediccionesNormativas))
+    ...sección de prediccionesNormativas...
+    @endif
+    @if(isset($prediccionesDocumentos) && count($prediccionesDocumentos))
+    ...sección de prediccionesDocumentos...
+    @endif
+--}}
 @endsection

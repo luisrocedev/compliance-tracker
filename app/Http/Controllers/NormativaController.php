@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
+
+
 use App\Models\Normativa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class NormativaController extends Controller
 {
+    public function generarPrediccion(Normativa $normativa)
+    {
+        $cacheKey = 'prediction:normativa:' . $normativa->id;
+        $prompt = "Dada la siguiente normativa, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$normativa->nombre}, Tipo: {$normativa->tipo}, Estado: {$normativa->estado}, Fecha de emisión: {$normativa->fecha_emision}, Fecha de vencimiento: {$normativa->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
+        \App\Jobs\ProcessNormativaPredictionJob::dispatch($normativa->id, $prompt);
+        Cache::put($cacheKey, 'Procesando...', now()->addMinutes(5));
+        return redirect()->route('normativas.show', $normativa)->with('success', 'Predicción IA en proceso. Recarga en unos segundos.');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,18 +35,13 @@ class NormativaController extends Controller
                 ;
             });
         }
-        $normativas = $query->orderByDesc('created_at')->paginate(10)->appends($request->all());
+        $normativas = $query->orderByDesc('created_at')->limit(10)->get();
 
         // Predicciones IA para cada normativa en la tabla (solo página actual)
         $predicciones = [];
         foreach ($normativas as $n) {
-            try {
-                $prompt = "Dada la siguiente normativa, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$n->nombre}, Tipo: {$n->tipo}, Estado: {$n->estado}, Fecha de emisión: {$n->fecha_emision}, Fecha de vencimiento: {$n->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
-                $pred = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
-            } catch (\Exception $e) {
-                $pred = null;
-            }
-            $predicciones[$n->id] = $pred;
+            $cacheKey = 'prediction:normativa:' . $n->id;
+            $predicciones[$n->id] = Cache::get($cacheKey);
         }
         return view('normativas.index', compact('normativas', 'predicciones'));
     }
@@ -76,12 +82,12 @@ class NormativaController extends Controller
     public function show(Normativa $normativa)
     {
         // Lógica para predicción IA
-        $prediction = null;
-        try {
+        $cacheKey = 'prediction:normativa:' . $normativa->id;
+        $prediction = Cache::get($cacheKey);
+        if ($prediction === null) {
             $prompt = "Dada la siguiente normativa, predice la probabilidad de que requiera renovación pronto y justifica brevemente. Datos: Nombre: {$normativa->nombre}, Tipo: {$normativa->tipo}, Estado: {$normativa->estado}, Fecha de emisión: {$normativa->fecha_emision}, Fecha de vencimiento: {$normativa->fecha_vencimiento}. Responde solo con: 'Alta', 'Media' o 'Baja' y una breve justificación.";
-            $prediction = app(\App\Services\OpenRouterService::class)->predictRenewal($prompt);
-        } catch (\Exception $e) {
-            $prediction = null;
+            \App\Jobs\ProcessNormativaPredictionJob::dispatch($normativa->id, $prompt);
+            $prediction = 'Procesando...';
         }
         return view('normativas.show', compact('normativa', 'prediction'));
     }

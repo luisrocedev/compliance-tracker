@@ -11,7 +11,14 @@
             <span class="text-lg font-semibold text-gray-800">Predicción IA de renovación:</span>
         </div>
         <div class="mt-2 px-4 py-3 rounded bg-gray-100 border-l-4 border-red-500">
+            @if($prediction === 'Procesando...')
+            <span class="animate-spin inline-block w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full align-middle"></span>
+            <span class="text-xs text-gray-500">Procesando...</span>
+            @elseif($prediction)
             <span class="font-bold text-red-600">{{ $prediction }}</span>
+            @else
+            <span class="text-xs text-gray-500">Sin datos</span>
+            @endif
         </div>
     </div>
     @endif
