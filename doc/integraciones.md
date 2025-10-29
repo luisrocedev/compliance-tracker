@@ -4,7 +4,7 @@
 
 -   [ ] Slack: pendiente
 -   [ ] WhatsApp Business: pendiente
--   [x] API REST: implementada (CRUD normativas, documentos, alertas, usuarios)
+-   [x] API REST: implementada y documentada (CRUD normativas, documentos, alertas, usuarios)
 -   [ ] PWA: pendiente
 -   [ ] Firma digital: pendiente
 
@@ -96,7 +96,8 @@ curl -H "Authorization: Bearer {token}" https://localhost/api/normativas
 
 ---
 
-_Actualizar este archivo conforme se avance en cada integración._
+
+Última actualización: 29/10/2025. API REST funcional y protegida con Sanctum. Integraciones externas pendientes.
 
 ---
 

@@ -12,7 +12,7 @@ Este documento organiza y resume la documentación existente del proyecto Compli
 
 ## 3. Estado actual vs. guía de avance
 
-### Estado actual (según RESUMEN_FINAL.md y pruebas recientes)
+### Estado actual (al 29/10/2025)
 
 -   Lógica principal y módulos CRUD de normativas, documentos, alertas y auditoría: **completos y funcionales**.
 -   Autenticación, roles y control de acceso: **implementados**.
@@ -20,6 +20,8 @@ Este documento organiza y resume la documentación existente del proyecto Compli
 -   Auditoría y trazabilidad: **implementadas**.
 -   Seeders y migraciones: **funcionando**.
 -   Reportes básicos y exportación: **inicial**.
+-   API REST: **implementada y documentada**.
+-   Lógica IA eliminada/desactivada para máxima velocidad.
 
 ### Pendientes respecto a la guía de avance (`readme_principal_proyecto.md`)
 

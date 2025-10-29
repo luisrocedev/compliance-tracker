@@ -13,6 +13,7 @@ Este documento debe ser completado con capturas y ejemplos tras la validación d
 -   Gestión de documentos: subir, versionar, descargar.
 -   Alertas: configurar y visualizar alertas programadas.
 -   Auditoría: consultar historial de acciones.
+-   API REST disponible para integraciones externas (requiere autenticación).
 
 ## Navegación
 

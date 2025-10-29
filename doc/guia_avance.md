@@ -12,7 +12,7 @@
 ## Pendiente/Próximos pasos
 
 -   [ ] Mejoras visuales avanzadas (responsive, branding)
--   [ ] Integraciones externas (Slack, WhatsApp, API REST, PWA, firma digital)
+-   [x] Integraciones externas: API REST implementada (Slack, WhatsApp, PWA, firma digital pendientes)
 -   [ ] Reportes avanzados y analíticas
 -   [ ] Pruebas unitarias/funcionales y cobertura
 -   [ ] Documentación de usuario y manuales

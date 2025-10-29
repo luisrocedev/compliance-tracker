@@ -11,6 +11,8 @@
 -   Ejecutar `php artisan migrate` y `php artisan db:seed` para actualizar datos.
 -   Revisar logs en `storage/logs/`.
 -   Realizar backups periódicos de la base de datos y archivos.
+-   Limpiar caché con `php artisan cache:clear` tras cambios críticos.
+-   Confirmar que la lógica IA y jobs de predicción estén desactivados para evitar lentitud.
 
 ## Despliegue
 
